@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gio Fest — Invitación</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#040406;
+    --bg-2:#0a0b10;
+    --silver:#cfcfcf;
+    --muted:#9aa3ad;
+    --celeste:#7be0ff;
+    --accent:#9ad9ff;
+    --glass: rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Montserrat',system-ui,Segoe UI,Helvetica,Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(123,224,255,0.04), transparent),
+                linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:#eef2f7;
+    overflow-x:hidden;
+  }
+
+  /* Page wrapper */
+  .site{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* Envelope intro overlay */
+  .intro-overlay{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(180deg, rgba(2,6,15,0.85), rgba(2,6,15,0.92));
+    z-index:40;
+  }
+  .envelope{
+    width:86vw; max-width:820px; height:460px; max-height:82vh;
+    perspective:1000px; position:relative;
+  }
+  .env-back{
+    position:absolute; inset:0; border-radius:12px; overflow:hidden;
+    background:linear-gradient(180deg,#0f1113,#070708);
+    box-shadow: 0 30px 80px rgba(2,6,23,0.7), 0 6px 18px rgba(0,0,0,0.6);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    padding:30px;
+  }
+  .env-flap{
+    position:absolute; left:0; right:0; top:0; height:54%;
+    background: linear-gradient(160deg,#bfc5c8,#9fa6ab 60%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    border-radius:12px 12px 60% 60%/12px 12px 120px 120px;
+    box-shadow: inset 0 -6px 18px rgba(0,0,0,0.15), 0 8px 30px rgba(0,0,0,0.25);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 900ms cubic-bezier(.2,.9,.2,1);
+    z-index:3;
+  }
+  .env-body{
+    position:absolute; left:6%; right:6%; bottom:6%; top:36%;
+    border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03); padding:28px; z-index:2;
+    display:flex; flex-direction:column; gap:10px; align-items:center; justify-content:center;
+  }
+
+  .env-title{font-size:44px; font-weight:800; letter-spacing:1px; color:var(--silver)}
+  .env-sub{color:var(--muted); font-size:16px; text-align:center; max-width:86%; margin-top:6px; line-height:1.4}
+  .open-btn{
+    margin-top:18px; padding:12px 18px; background: linear-gradient(180deg,var(--celeste), #67d7ff);
+    border-radius:10px; border:none; font-weight:700; cursor:pointer; color:#062025;
+    box-shadow: 0 10px 40px rgba(109,223,255,0.08);
+  }
+
+  /* Main card */
+  .card{
+    width:100%; max-width:980px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:16px; padding:26px; box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    display:flex; gap:20px; position:relative; z-index:2;
+    backdrop-filter: blur(6px) saturate(120%);
+  }
+  header.invite{
+    display:flex; gap:18px; align-items:center; width:100%;
+  }
+  .photo{
+    width:130px;height:130px;border-radius:12px; overflow:hidden; flex:0 0 130px;
+    border:2px solid rgba(255,255,255,0.04); background:linear-gradient(135deg,#111315,#2a2a2a);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .title-block{flex:1}
+  .main-title{font-size:34px;font-weight:800;margin:0;color:var(--silver)}
+  .subtitle{color:var(--muted);margin-top:8px; font-size:15px; line-height:1.35}
+  .small-note{color:var(--muted); font-size:13px; margin-top:8px}
+
+  .meta{
+    display:flex; flex-direction:column; gap:10px; align-items:flex-end;
+  }
+  .btn{
+    padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700;
+    background: linear-gradient(180deg,var(--accent), #7fd6ff); color:#022934;
+  }
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+  .action-row{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+
+  .info-grid{display:flex; gap:18px; margin-top:18px}
+  .info-card{flex:1; background:var(--glass); border-radius:12px; padding:14px}
+  .info-card h4{margin:0 0 6px 0; font-size:13px;color:var(--muted)}
+  .info-card .big{font-weight:800;font-size:20px;color:var(--silver)}
+
+  /* Gallery */
+  .gallery{margin-top:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+  .gallery .slot{
+    height:120px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2));
+    border:1px dashed rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-weight:600; position:relative; overflow:hidden;
+  }
+  .gallery .slot img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* disco balls & sparkles - background layer */
+  .bg-layer{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+  .disco{
+    position:absolute; border-radius:50%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), rgba(255,255,255,0.06) 8%),
+      repeating-conic-gradient(from 0deg, rgba(255,255,255,0.07) 0deg 6deg, rgba(0,0,0,0.06) 6deg 12deg),
+      linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+    box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    mix-blend-mode: screen;
+    transform-origin:center center;
+    animation: rotate-ball linear infinite, floaty ease-in-out infinite;
+  }
+  /* create multiple disco sizes/positions via classes */
+  .d1{width:220px;height:220px;left:6%;top:6%; animation-duration:18s; animation-delay:0s}
+  .d2{width:140px;height:140px;right:8%;top:12%; animation-duration:12s; animation-delay:1s}
+  .d3{width:90px;height:90px;left:22%;bottom:18%; animation-duration:10s; animation-delay:2s}
+  .d4{width:160px;height:160px;right:20%;bottom:6%; animation-duration:16s; animation-delay:0.6s}
+  .d5{width:110px;height:110px;left:50%;top:20%; animation-duration:13s; animation-delay:0.9s}
+
+  @keyframes rotate-ball{ from{ transform: rotate(0deg)} to{ transform: rotate(360deg)} }
+  @keyframes floaty{
+    0%{ transform: translateY(0px) rotate(0deg)}
+    50%{ transform: translateY(-14px) rotate(6deg)}
+    100%{ transform: translateY(0px) rotate(0deg)}
+  }
+
+  /* tiny mirrored tiles effect (pseudo shimmer using overlay) */
+  .disco::after{
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(120deg, rgba(123,224,255,0.06), transparent 30%, rgba(255,255,255,0.06) 60%);
+    mix-blend-mode: screen; pointer-events:none;
+  }
+
+  /* sparkles (many little stars) */
+  .sparkle{
+    position:absolute; width:6px;height:6px;border-radius:50%; background:var(--celeste);
+    box-shadow:0 0 14px rgba(123,224,255,0.9);
+    opacity:0; transform:scale(0.6);
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle{
+    0%{opacity:0; transform:scale(0.3) translateY(0)}
+    30%{opacity:1; transform:scale(1) translateY(-6px)}
+    100%{opacity:0; transform:scale(0.4) translateY(6px)}
+  }
+
+  /* footer small */
+  footer.pagefoot{margin-top:16px; color:var(--muted); font-size:13px; text-align:center}
+  /* responsive */
+  @media (max-width:900px){
+    .gallery{grid-template-columns:repeat(2,1fr)}
+    .photo{width:96px;height:96px}
+    .env-back{padding:18px}
+    .env-title{font-size:34px}
+  }
+  @media (max-width:520px){
+    .card{padding:18px; flex-direction:column}
+    .info-grid{flex-direction:column}
+    .title-block .main-title{font-size:26px}
+    .gallery .slot{height:100px}
+  }
+</style>
+</head>
+<body>
+  <!-- Background animated layer -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="disco d1"></div>
+    <div class="disco d2"></div>
+    <div class="disco d3"></div>
+    <div class="disco d4"></div>
+    <div class="disco d5"></div>
+    <!-- sparkles will be injected by JS for many animated highlights -->
+  </div>
+
+  <!-- Intro overlay (envelope) -->
+  <div class="intro-overlay" id="intro">
+    <div class="envelope" role="dialog" aria-modal="true" aria-label="Abrir invitación">
+      <div class="env-back">
+        <div class="env-title">Gio Fest</div>
+        <div class="env-sub">Será una noche mágica para mí y me encantaría que la disfrutes conmigo.<br>Espero verte ahí.</div>
+        <button class="open-btn" id="openInvite">Abrir invitación</button>
+      </div>
+      <div class="env-flap" id="envFlap"></div>
+      <div class="env-body">
+        <!-- visible while closed -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main class="site" id="mainContent" aria-hidden="true">
+    <div class="card" role="main" aria-label="Invitación de Gio">
+      <div style="flex:1">
+        <header class="invite">
+          <div class="photo" id="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%' height='100%' fill='%230b0b0b'/><text x='50%' y='50%' fill='%239aa3ad' font-size='24' font-family='Montserrat, sans-serif' text-anchor='middle' dominant-baseline='middle'>Foto</text></svg>" alt="Foto de Gio"></div>
+          <div class="title-block">
+            <h1 class="main-title">Gio Fest</h1>
+            <div class="subtitle">Será una noche mágica para mí y me encantaría que la disfrutes conmigo.<br>Espero verte ahí.</div>
+            <div class="small-note" style="margin-top:12px"><strong style="font-weight:800">Mis 15 años!!!</strong> <span style="opacity:0.8;margin-left:8px">— discreto</span></div>
+
+            <div class="action-row">
+              <button class="btn" id="playToggle">► Reproducir / Pausar</button>
+              <a class="btn ghost" id="rsvpBtn" href="https://wa.me/+542324534583" target="_blank" rel="noopener">RSVP (WhatsApp)</a>
+              <button class="btn ghost" id="mapBtn">Cómo llegar</button>
+              <button class="btn ghost" id="shareBtn">Compartir</button>
+              <a class="btn" id="playlistBtn" href="https://open.spotify.com/playlist/5IxHTjRorrOPt96nbNmOD9?si=XG3QbpZkTiagxrPTUQRaBQ" target="_blank" rel="noopener">Escuchá esta playlist</a>
+            </div>
+          </div>
+
+          <div class="meta" aria-hidden="true">
+            <div style="text-align:right">
+              <div style="font-size:13px;color:var(--muted)">CUándo</div>
+              <div class="big" id="dateText">26/12/2025 — 21:00</div>
+            </div>
+            <div style="text-align:right;margin-top:8px">
+              <div style="font-size:13px;color:var(--muted)">Dónde</div>
+              <div class="big" id="placeText">Las Chancles</div>
+            </div>
+          </div>
+        </header>
+
+        <div class="info-grid" style="margin-top:18px">
+          <div class="info-card">
+            <h4>Dress code</h4>
+            <div class="big">Elegante <span style="font-weight:600; color:var(--muted); font-size:13px"> (evitar celeste, blanco y bordo)</span></div>
+          </div>
+          <div class="info-card">
+            <h4>Cuenta regresiva</h4>
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <div style="text-align:center"><div class="big" id="days">00</div><div style="font-size:12px;color:var(--muted)">Días</div></div>
+              <div style="text-align:center"><div class="big" id="hours">00</div><div style="font-size:12px;color:var(--muted)">Horas</div></div>
+              <div style="text-align:center"><div class="big" id="mins">00</div><div style="font-size:12px;color:var(--muted)">Min</div></div>
+              <div style="text-align:center"><div class="big" id="secs">00</div><div style="font-size:12px;color:var(--muted)">Seg</div></div>
+            </div>
+          </div>
+          <div class="info-card">
+            <h4>Playlist</h4>
+            <div style="margin-top:8px;color:var(--muted)">A devorarrrr 😎🥳😈🎵</div>
+            <a class="btn" style="margin-top:10px;display:inline-block" href="https://open.spotify.com/playlist/5IxHTjRorrOPt96nbNmOD9?si=XG3QbpZkTiagxrPTUQRaBQ" target="_blank">Abrir en Spotify</a>
+          </div>
+        </div>
+
+        <!-- Gallery (vacía, editable) -->
+        <section style="margin-top:18px">
+          <h3 style="margin:0 0 10px 0;color:var(--muted)">Galería</h3>
+          <div class="gallery" id="gallery">
+            <!-- 6 slots ready to replace -->
+            <div class="slot" data-index="0">Agregar foto</div>
+            <div class="slot" data-index="1">Agregar foto</div>
+            <div class="slot" data-index="2">Agregar foto</div>
+            <div class="slot" data-index="3">Agregar foto</div>
+            <div class="slot" data-index="4">Agregar foto</div>
+            <div class="slot" data-index="5">Agregar foto</div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <input id="fileInput" type="file" accept="image/*" multiple style="display:none">
+            <button class="btn ghost" id="addPhotos">Añadir / Reemplazar fotos</button>
+            <div style="color:var(--muted);font-size:13px">Súbelas y se reemplazarán los espacios.</div>
+          </div>
+        </section>
+
+        <footer class="pagefoot">Invitación creada especialmente • Diseño elegante con destellos celestes ✨</footer>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio (placeholder) -->
+  <!-- IMPORTANTE: reemplazá "audio/rezo-por-vos.mp3" por la URL o archivo que tengas con derechos.
+       Ejemplos:
+       - archivo local junto a index: "audio/rezo-por-vos.mp3"
+       - URL pública: "https://tu-hosting.com/rezo-por-vos.mp3"
+       No incluyo el mp3 por derechos de autor. -->
+  <audio id="bgAudio" preload="auto" crossorigin="anonymous">
+    <source src="audio/rezo-por-vos.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+<script>
+/* -----------------------
+  CONFIG
+------------------------*/
+const config = {
+  nombre: "Gio",
+  dateISO: "2025-12-26T21:00:00-03:00",
+  place: "Las Chancles",
+  rsvpWhatsapp: "https://wa.me/+542324534583",
+  playlist: "https://open.spotify.com/playlist/5IxHTjRorrOPt96nbNmOD9?si=XG3QbpZkTiagxrPTUQRaBQ",
+  // mapa búsqueda (si tenés la dirección exacta reemplaza aquí)
+  mapQuery: "https://www.google.com/maps/search/?api=1&query=Las+Chancles"
+};
+
+/* -----------------------
+  DOM refs
+------------------------*/
+const intro = document.getElementById('intro');
+const envFlap = document.getElementById('envFlap');
+const openBtn = document.getElementById('openInvite');
+const mainContent = document.getElementById('mainContent');
+const bgAudio = document.getElementById('bgAudio');
+const playToggle = document.getElementById('playToggle');
+const rsvpBtn = document.getElementById('rsvpBtn');
+const mapBtn = document.getElementById('mapBtn');
+const shareBtn = document.getElementById('shareBtn');
+const playlistBtn = document.getElementById('playlistBtn');
+
+document.getElementById('dateText').textContent = new Date(config.dateISO).toLocaleString('es-AR', {weekday:'short', day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+document.getElementById('placeText').textContent = config.place;
+rsvpBtn.href = config.rsvpWhatsapp;
+playlistBtn.href = config.playlist;
+
+/* -----------------------
+  Open envelope: animation + start audio
+------------------------*/
+openBtn.addEventListener('click', async ()=>{
+  // animate flap up
+  envFlap.style.transform = 'rotateX(-180deg)';
+  // small delay to hide overlay
+  setTimeout(()=> {
+    intro.style.display = 'none';
+    mainContent.setAttribute('aria-hidden','false');
+  }, 700);
+  // try to play audio (user interaction -> should be allowed)
+  try{
+    await bgAudio.play();
+    playToggle.textContent = '⏸ Pausar';
+  }catch(e){
+    // autoplay blocked: inform user elegantly
+    console.warn('Reproducción automática bloqueada por el navegador:', e);
+    playToggle.textContent = '► Reproducir';
+  }
+});
+
+/* -----------------------
+  Play/pause button
+------------------------*/
+playToggle.addEventListener('click', async ()=>{
+  if(bgAudio.paused){
+    try{ await bgAudio.play(); playToggle.textContent='⏸ Pausar'; }
+    catch(e){ alert('No se pudo reproducir. Permite reproducción en tu navegador.'); }
+  } else {
+    bgAudio.pause(); playToggle.textContent='► Reproducir';
+  }
+});
+
+/* Map and share handlers */
+mapBtn.addEventListener('click', ()=> window.open(config.mapQuery,'_blank'));
+shareBtn.addEventListener('click', async ()=>{
+  const shareData = { title:Gio Fest — Invitación, text:Gio te invita: Será una noche mágica., url: location.href };
+  if(navigator.share){
+    try{ await navigator.share(shareData); }catch(e){}
+  } else {
+    try{ await navigator.clipboard.writeText(location.href); alert('Link copiado al portapapeles'); }
+    catch(e){ prompt('Copia este link:', location.href); }
+  }
+});
+
+/* -----------------------
+  Countdown
+------------------------*/
+function pad(n){ return String(n).padStart(2,'0') }
+function updateCountdown(){
+  const now = new Date();
+  const target = new Date(config.dateISO);
+  let diff = Math.max(0, target - now);
+  const secs = Math.floor(diff/1000)%60;
+  const mins = Math.floor(diff/60000)%60;
+  const hours = Math.floor(diff/3600000)%24;
+  const days = Math.floor(diff/86400000);
+  document.getElementById('days').textContent = pad(days);
+  document.getElementById('hours').textContent = pad(hours);
+  document.getElementById('mins').textContent = pad(mins);
+  document.getElementById('secs').textContent = pad(secs);
+}
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+/* -----------------------
+  Sparkles generator (lots of brillos celestes)
+------------------------*/
+const bgLayer = document.querySelector('.bg-layer');
+function spawnSparkles(n=24){
+  // remove old
+  document.querySelectorAll('.sparkle').forEach(el=>el.remove());
+  for(let i=0;i<n;i++){
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    // random positions across screen
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = Math.random()*100 + '%';
+    const dur = 2 + Math.random()*3;
+    s.style.animationDuration = dur + 's';
+    s.style.animationDelay = (Math.random()*2)+'s';
+    bgLayer.appendChild(s);
+  }
+}
+spawnSparkles(36);
+
+/* periodically respawn to vary positions */
+setInterval(()=> spawnSparkles(30 + Math.floor(Math.random()*20)), 7000);
+
+/* -----------------------
+  Gallery file upload / replace
+------------------------*/
+const gallery = document.getElementById('gallery');
+const fileInput = document.getElementById('fileInput');
+const addPhotos = document.getElementById('addPhotos');
+
+addPhotos.addEventListener('click', ()=> fileInput.click());
+fileInput.addEventListener('change', e=>{
+  const files = Array.from(e.target.files);
+  for(let i=0;i<files.length && i<gallery.children.length;i++){
+    const slot = gallery.children[i];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      slot.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      slot.appendChild(img);
+    }
+    reader.readAsDataURL(files[i]);
+  }
+});
+
+/* allow click on a slot to replace that specific one */
+Array.from(gallery.children).forEach(slot=>{
+  slot.addEventListener('click', ()=>{
+    const idx = Number(slot.dataset.index);
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept='image/*';
+    input.onchange = (ev)=>{
+      const file = ev.target.files[0];
+      if(!file) return;
+      const r = new FileReader();
+      r.onload = e => {
+        slot.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        slot.appendChild(img);
+      }
+      r.readAsDataURL(file);
+    }
+    input.click();
+  });
+});
+
+/* small accessibility: hide intro after Esc */
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape' && intro.style.display !== 'none'){
+    envFlap.style.transform = 'rotateX(-180deg)';
+    setTimeout(()=> { intro.style.display='none'; mainContent.setAttribute('aria-hidden','false') },600);
+  }
+});
+
+/* set photo alt & placeholder (if querés reemplazar la foto del festejado, modifica el src en HTML) */
+document.getElementById('photo').querySelector('img').alt = 'Foto de Gio';
+
+/* --- end of script --- */
+</script>
+</body>
+</html>
